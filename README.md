@@ -25,3 +25,35 @@ Quadra Backend es una API REST desarrollada en Node.js y TypeScript para gestion
 ## Estructura del proyecto
 
 El proyecto sigue una estructura modular para facilitar la escalabilidad y el mantenimiento:
+src/
+├── config/         # Configuración de la base de datos
+├── controllers/    # Controladores para manejar la lógica de negocio
+├── lib/            # Librerías compartidas (e.g., cliente Prisma)
+├── middleware/     # Middleware para validaciones y lógica adicional
+├── models/         # Modelos de datos para MongoDB
+├── routes/         # Definición de rutas de la API
+├── types/          # Definición de tipos TypeScript
+├── utils/          # Utilidades compartidas (e.g., funciones de autenticación)
+
+
+## Instalación y configuración
+
+1. Clona este repositorio.
+2. Instala las dependencias con `npm install`.
+3. Configura las variables de entorno en un archivo `.env`:
+   ```env
+   DATABASE_POSTGRESQL=tu_url_de_postgresql
+   DATABASE_MONGODB=tu_url_de_mongodb
+   PORT=4000
+   ```
+4. Ejecuta las migraciones de Prisma:
+   ```sh
+   npx prisma migrate dev
+   ```
+5. Inicia el servidor en modo desarrollo:
+   ```sh
+   npm run dev
+   ```
+
+## Contribuciones
+Las contribuciones son bienvenidas. Por favor, abre un issue o envía un pull request para sugerir mejoras o reportar problemas.
