@@ -22,18 +22,21 @@ Quadra Backend es una API REST desarrollada en Node.js y TypeScript para gestion
 - **express-validator**: Validación de entradas en las rutas.
 - **dotenv**: Manejo de variables de entorno.
 
+```markdown
 ## Estructura del proyecto
 
 El proyecto sigue una estructura modular para facilitar la escalabilidad y el mantenimiento:
+
+```tree
 src/
-├── config/         # Configuración de la base de datos
-├── controllers/    # Controladores para manejar la lógica de negocio
-├── lib/            # Librerías compartidas (e.g., cliente Prisma)
-├── middleware/     # Middleware para validaciones y lógica adicional
-├── models/         # Modelos de datos para MongoDB
-├── routes/         # Definición de rutas de la API
-├── types/          # Definición de tipos TypeScript
-├── utils/          # Utilidades compartidas (e.g., funciones de autenticación)
+├── config/
+├── controllers/
+├── lib/
+├── middleware/
+├── models/
+├── routes/
+├── types/
+└── utils/
 
 
 ## Instalación y configuración
