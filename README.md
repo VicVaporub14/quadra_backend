@@ -36,6 +36,7 @@ src/
 ├── routes/
 ├── types/
 └── utils/
+```
 
 ## Instalación y configuración
 
