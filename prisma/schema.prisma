@@ -46,7 +46,7 @@ model Usuario {
   email     String   @unique
   password  String
   role      Role     @default(CUSTOMER)
-  imagen    String
+  imagen    String   @default("default.png")
   confirmado Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
