@@ -50,8 +50,9 @@ export class UsersController {
     }
 
     static async getUserById(req: Request, res: Response) {
+        const { id } = req.user
         try {
-            res.send('Desde Obtener Usuario por Id')
+            res.status(200).json(req.user)
         } catch (error) {
             console.log(error)
             res.status(500).json({error: 'Error al obtener el usuario'})

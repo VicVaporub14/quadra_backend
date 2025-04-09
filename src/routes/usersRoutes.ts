@@ -3,6 +3,7 @@ import { Router } from "express";
 import { UsersController } from "../controllers/UsersController";
 import { body, param } from "express-validator";
 import handleInputErrors from "../middleware/validation";
+import { userExists } from "../middleware/users";
 
 const router = Router();
 
@@ -38,6 +39,8 @@ router.get('/',
     handleInputErrors,
     UsersController.getAllUsers
 )
+
+router.param('userId', userExists)
 
 router.get('/:userId',
     param('userId').isNumeric().withMessage('Id No Valido'),
