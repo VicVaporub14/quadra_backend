@@ -48,6 +48,19 @@ router.get('/:userId',
     UsersController.getUserById
 )
 
+/* Falta autorizacion de actualizacion y eliminacion */
+router.put('/:userId',
+    param('userId').isNumeric().withMessage('Id No Valido'),
+    handleInputErrors,
+    UsersController.updateUser
+)
+
+router.delete('/:userId',
+    param('userId').isNumeric().withMessage('Id No Valido'),
+    handleInputErrors,
+    UsersController.deleteUser
+)
+
 
 /* Cambio de imagen */
 // router.put('/:id/imagen',

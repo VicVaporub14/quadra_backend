@@ -41,7 +41,20 @@ export class UsersController {
     
     static async getAllUsers(req: Request, res: Response) {
         try {
-            const users = await prisma.usuario.findMany()
+            const users = await prisma.usuario.findMany({
+                select: {
+                    id: true,
+                    nombre: true,
+                    apellido: true,
+                    email: true,
+                    role: true,
+                    imagen: true,
+                    confirmado: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    // Excluye el campo "password" al no incluirlo aquí
+                },
+            })
             res.status(201).json(users)
         } catch (error) {
             console.log(error)
@@ -52,10 +65,57 @@ export class UsersController {
     static async getUserById(req: Request, res: Response) {
         const { id } = req.user
         try {
-            res.status(200).json(req.user)
+            const user = await prisma.usuario.findFirst({
+                where: { id },
+                select: {
+                    id: true,
+                    nombre: true,
+                    apellido: true,
+                    email: true,
+                    role: true,
+                    imagen: true,
+                    confirmado: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    // Excluye el campo "password" al no incluirlo aquí
+                },
+            })
+            if (!user) {
+                const error = new Error('Usuario no encontrado')
+                res.status(404).json({error: error.message})
+                return
+            }
+            res.status(200).json(user)
         } catch (error) {
             console.log(error)
             res.status(500).json({error: 'Error al obtener el usuario'})
+        }
+    }
+
+    static async updateUser(req: Request, res: Response) {
+        const { id } = req.user;
+        try {
+            const userUpdated = await prisma.usuario.update({
+                where: { id },
+                data: req.body
+            })
+            res.status(200).send('Usuario actualizado correctamente')
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({error: 'Error al actualizar el usuario'})
+        }
+    }
+
+    static async deleteUser(req: Request, res: Response) {
+        const { id } = req.user
+        try {
+            const userDeleted = await prisma.usuario.delete({
+                where: { id }
+            })
+            res.status(200).send('Usuario eliminado correctamente')
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({error: 'Error al eliminar el usuario'})
         }
     }
 }

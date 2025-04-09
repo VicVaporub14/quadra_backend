@@ -5,7 +5,7 @@ import { prisma } from "../lib/prisma";
 declare global {
     namespace Express {
         interface Request {
-            user: Usuario;
+            user: Omit<Usuario, 'password'>;
         }
     }
 }
@@ -15,7 +15,19 @@ export async function userExists(req: Request, res: Response, next: NextFunction
         const { userId } = req.params;
 
         const user = await prisma.usuario.findFirst({
-            where: { id: Number(userId) }
+            where: { id: Number(userId) },
+            select: {
+                id: true,
+                nombre: true,
+                apellido: true,
+                email: true,
+                role: true,
+                imagen: true,
+                confirmado: true,
+                createdAt: true,
+                updatedAt: true,
+                // Excluye el campo "password" al no incluirlo aquí
+            }
         })
 
         if (!user) {
