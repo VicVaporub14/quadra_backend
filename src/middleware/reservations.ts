@@ -22,7 +22,7 @@ export async function reservationExists(req: Request, res: Response, next: NextF
         }
 
         req.reservation = reservation;
-        next()
+        next();
     } catch (error) {
         res.status(500).json({error: 'Hubo un error en middleware'})
     }

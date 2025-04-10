@@ -2,6 +2,7 @@ import { Router } from "express";
 import ReservationsController from "../controllers/ReservationsController";
 import { body, param } from "express-validator";
 import handleInputErrors from "../middleware/validation";
+import { reservationExists } from "../middleware/reservations";
 
 
 const router = Router()
@@ -28,10 +29,18 @@ router.get('/',
     ReservationsController.getAllReservations
 )
 
+router.param('reservationId', reservationExists);
+
 router.get('/:reservationId', 
     param('reservationId').isMongoId().withMessage('Id No valido'),
     handleInputErrors,
     ReservationsController.getReservationById
+)
+
+router.put('/:reservationId',
+    param('reservationId').isMongoId().withMessage('Id No valido'),
+    handleInputErrors,
+    ReservationsController.updateReservation
 )
 
 export default router;
