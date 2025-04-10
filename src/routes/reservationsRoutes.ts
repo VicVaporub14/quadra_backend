@@ -1,6 +1,7 @@
 import { Router } from "express";
 import ReservationsController from "../controllers/ReservationsController";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
+import handleInputErrors from "../middleware/validation";
 
 
 const router = Router()
@@ -22,8 +23,15 @@ router.post('/',
         .notEmpty().withMessage('El alquiler es obligatorio'),
     ReservationsController.createNewReservation
 )
-router.get('/', ReservationsController.getAllReservations)
+router.get('/', 
+    handleInputErrors,
+    ReservationsController.getAllReservations
+)
 
-router.get('/:id', ReservationsController.getReservationById)
+router.get('/:reservationId', 
+    param('reservationId').isMongoId().withMessage('Id No valido'),
+    handleInputErrors,
+    ReservationsController.getReservationById
+)
 
 export default router;
