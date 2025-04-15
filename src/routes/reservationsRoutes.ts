@@ -40,7 +40,14 @@ router.get('/:reservationId',
 router.put('/:reservationId',
     param('reservationId').isMongoId().withMessage('Id No valido'),
     handleInputErrors,
+     // hasAuthorization
     ReservationsController.updateReservation
 )
 
+router.delete('/:reservationId',
+    param('reservationId').isMongoId().withMessage('Id no válido'),
+    handleInputErrors,
+    // hasAuthorization
+    ReservationsController.deleteReservation
+)
 export default router;

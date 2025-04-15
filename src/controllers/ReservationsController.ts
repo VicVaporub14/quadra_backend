@@ -61,9 +61,11 @@ class ReservationsController {
 
     static async deleteReservation(req: Request, res: Response) {
         try {
-            
+            await req.reservation.deleteOne()
+            res.send('Reservacion eliminada correctamente')
         } catch (error) {
-            res.status(500).json({error: 'Hubo un error al eliminar la reserva'})
+            console.log(error)
+            // res.status(500).json({error: 'Hubo un error al eliminar la reserva'})
         }
     }
     
