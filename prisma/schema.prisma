@@ -30,6 +30,9 @@ model Vehiculo {
   anio            Int
   transmision     String
   tipo            String
+  puertas         Int
+  asientos        Int
+  clima           Boolean
   precio_por_dia  Float
   seguroId        Int
   seguro          Seguro  @relation(fields: [seguroId], references: [id])

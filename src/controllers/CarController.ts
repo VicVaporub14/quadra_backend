@@ -19,7 +19,11 @@ class CarController {
 
     static async getAllCars(req: Request, res: Response) {
         try {
-            const cars = await prisma.vehiculo.findMany();
+            const cars = await prisma.vehiculo.findMany({
+                include: {
+                    seguro: true
+                }
+            });
             res.status(201).send(cars)
         } catch (error) {
             console.log(error)
@@ -31,7 +35,10 @@ class CarController {
         const { id } = req.car;
         try {
             const car = await prisma.vehiculo.findFirst({
-                where: { id }
+                where: { id },
+                include: {
+                    seguro: true
+                }
             })
 
             if (!car) {
