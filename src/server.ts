@@ -6,9 +6,10 @@ import dotenv from 'dotenv'
 import authRoutes from "./routes/authRoutes"
 import carRoutes from "./routes/carRoutes";
 import insuranceRoutes from "./routes/insuranceRoutes";
-import usersRoutes from "./routes/usersRoutes"
-import branchesRoutes from "./routes/branchesRoutes"
+import userRoutes from "./routes/usersRoutes"
+import branchRoutes from "./routes/branchesRoutes"
 import reservationRoutes from "./routes/reservationsRoutes"
+import maintenanceRoutes from "./routes/maintenanceRoutes"
 
 dotenv.config()
 
@@ -22,8 +23,9 @@ app.use(express.json());
 app.use('/api/auth', authRoutes)
 app.use('/api/cars', carRoutes)
 app.use('/api/insurances', insuranceRoutes)
-app.use('/api/users', usersRoutes)
-app.use('/api/branches', branchesRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/branches', branchRoutes)
 app.use('/api/reservations', reservationRoutes)
+app.use('/api/maintenances', maintenanceRoutes)
 
 export default app;

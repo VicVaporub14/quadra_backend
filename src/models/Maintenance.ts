@@ -10,12 +10,12 @@ export type MantenimientoStatus = typeof mantenimientoStatus[keyof typeof manten
 
 export interface IMantenimiento extends Document {
     vehiculo_id: number,
-    mantenimiento: {
+    mantenimientos: {
         tipo: string,
         costo: number,
         kilometraje: number,
         status: MantenimientoStatus,
-        notes: string[]
+        notas: string
     }[]
 }
 
@@ -24,7 +24,7 @@ const MantenimientoSchema : Schema = new Schema({
         type: Number,
         required: true
     },
-    mantenimiento: [
+    mantenimientos: [
         {
             tipo: {
                 type: String,
@@ -43,11 +43,10 @@ const MantenimientoSchema : Schema = new Schema({
                 enum: Object.values(mantenimientoStatus),
                 default: mantenimientoStatus.PENDIENTE
             },
-            notes: [
-                {
-                    type: String
-                }
-            ]
+            notas: {
+                type: String,
+                required: true
+            }
         }
     ]
 }, {timestamps: true})
