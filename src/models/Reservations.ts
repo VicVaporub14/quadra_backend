@@ -1,9 +1,10 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IReservas extends Document {
-    cliente_id: number,
+    nombre: string,
+    email: string,
+    telefono: string,
     vehiculo_id: number,
-    seguro_id: number,
     fecha_inicio: Date,
     fecha_fin: Date,
     estado: string,
@@ -11,16 +12,20 @@ export interface IReservas extends Document {
 }
 
 const ReservasSchema : Schema = new Schema({
-    cliente_id: {
-        type: Number,
+    nombre: { 
+        type: String, 
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    telefono: {
+        type: String,
         required: true
     },
     vehiculo_id: { 
         type: Number, 
-        required: true
-    },
-    seguro_id: {
-        type: Number,
         required: true
     },
     fecha_inicio: {
@@ -33,7 +38,8 @@ const ReservasSchema : Schema = new Schema({
     },
     estado: {
         type: String,
-        required: true
+        required: true,
+        default: 'Vehiculo En Proceso de Entrega'
     },
     alquiler: {
         monto: {
@@ -46,11 +52,8 @@ const ReservasSchema : Schema = new Schema({
         },
         estado: {
             type: String,
-            required: true
-        },
-        createdAt: {
-            type: Date,
-            required: true
+            required: true,
+            default: 'no pagado'
         }
     }
 }, {timestamps: true})
