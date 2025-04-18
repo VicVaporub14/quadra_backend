@@ -19,8 +19,8 @@ router.post('/',
     MaintenanceController.createMaintenance
 )
 
-// router.get('/',
-//     MaintenanceController.getAllMaintenances
-// )
+router.get('/',
+    MaintenanceController.getAllMaintenances
+)
 
 export default router
