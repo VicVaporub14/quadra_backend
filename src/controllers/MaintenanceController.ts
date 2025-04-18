@@ -52,6 +52,17 @@ export class MaintenanceController {
             console.log(error)
             res.status(500).json({ error: ' Error al obtener todos los mantenimientos'})
         }
+    };
+
+    static getMaintenanceById = async (req: Request, res: Response) => { // Pendiente agregar middleware
+        const { maintenanceId } = req.params
+        try {
+            const maintenance = await Mantenimiento.findById(maintenanceId)
+            res.json(maintenance)
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ error: 'Error al obtener el mantenimiento'})
+        }
     }
 }
 

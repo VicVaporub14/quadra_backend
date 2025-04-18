@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
-import { branchExist } from "../middleware/branches";
+import { branchExist } from "../middleware/branch";
 import handleInputErrors from "../middleware/validation";
 import { BranchesController } from "../controllers/BranchesController";
 

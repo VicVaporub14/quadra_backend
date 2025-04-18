@@ -2,7 +2,7 @@ import { Router } from "express";
 import CarController from "../controllers/CarController";
 import { body, param } from "express-validator";
 import handleInputErrors from "../middleware/validation";
-import { carExist } from "../middleware/cars";
+import { carExist } from "../middleware/car";
 
 const router = Router();
 

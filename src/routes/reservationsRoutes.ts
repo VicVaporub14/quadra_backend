@@ -2,7 +2,7 @@ import { Router } from "express";
 import ReservationsController from "../controllers/ReservationsController";
 import { body, param } from "express-validator";
 import handleInputErrors from "../middleware/validation";
-import { reservationExists } from "../middleware/reservations";
+import { reservationExists } from "../middleware/reservation";
 
 
 const router = Router()

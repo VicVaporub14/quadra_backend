@@ -23,4 +23,8 @@ router.get('/',
     MaintenanceController.getAllMaintenances
 )
 
+router.get('/:maintenanceId',
+    MaintenanceController.getMaintenanceById
+)
+
 export default router

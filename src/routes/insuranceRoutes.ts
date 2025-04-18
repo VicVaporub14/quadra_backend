@@ -3,7 +3,7 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 import InsuranceController  from "../controllers/InsuranceController";
 import { handleInputErrors } from "../middleware/validation";
-import { insuranceExists } from "../middleware/insurances";
+import { insuranceExists } from "../middleware/insurance";
 
 
 const router = Router();
