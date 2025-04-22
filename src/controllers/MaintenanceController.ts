@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import Mantenimiento from "../models/Maintenance";
 
 export class MaintenanceController {
@@ -55,13 +55,23 @@ export class MaintenanceController {
     };
 
     static getMaintenanceById = async (req: Request, res: Response) => { // Pendiente agregar middleware
-        const { maintenanceId } = req.params
+        const { carId } = req.params
         try {
-            const maintenance = await Mantenimiento.findById(maintenanceId)
+            const maintenance = await Mantenimiento.findOne({ vehiculo_id: carId})
             res.json(maintenance)
         } catch (error) {
             console.log(error)
             res.status(500).json({ error: 'Error al obtener el mantenimiento'})
+        }
+    }
+
+    static updateMaintenance = async (req: Request, res: Response) => {
+        try {
+            // Pendiente por revisar: Verificar si es conveniente modificar un mantenimiento o dejarlo como esta
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({error: 'Error al actualizar el mantenimiento'})
         }
     }
 }

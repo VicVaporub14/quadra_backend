@@ -12,8 +12,8 @@ declare global {
 
 export async function maintenanceExists(req: Request, res: Response, next: NextFunction) {
     try {
-        const { maintenanceId } = req.params;
-        const maintenance = await Mantenimiento.findById(maintenanceId)
+        const { carId } = req.params;
+        const maintenance = await Mantenimiento.findOne({ vehiculo_id: carId })
         
         if (!maintenance) {
             const error = new Error('No se encontro el mantenimiento del vehiculo')

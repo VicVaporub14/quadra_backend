@@ -24,9 +24,9 @@ router.get('/',
     MaintenanceController.getAllMaintenances
 )
 
-router.param('maintenanceId', maintenanceExists)
+router.param('carId', maintenanceExists)
 
-router.get('/:maintenanceId',
+router.get('/:carId',
     MaintenanceController.getMaintenanceById
 )
 
