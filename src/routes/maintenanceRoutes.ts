@@ -2,6 +2,7 @@
 import { Router } from "express";
 import { MaintenanceController } from "../controllers/MaintenanceController";
 import { body } from "express-validator";
+import { maintenanceExists } from "../middleware/maintenance";
 
 const router = Router();
 
@@ -22,6 +23,8 @@ router.post('/',
 router.get('/',
     MaintenanceController.getAllMaintenances
 )
+
+router.param('maintenanceId', maintenanceExists)
 
 router.get('/:maintenanceId',
     MaintenanceController.getMaintenanceById

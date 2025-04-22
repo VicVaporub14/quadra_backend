@@ -22,7 +22,7 @@ export async function maintenanceExists(req: Request, res: Response, next: NextF
         }
 
         req.maintenance = maintenance;
-        next()
+        next();
     } catch (error) {
         res.status(500).json({error: 'Hubo un error en middleware Maintenance'})
     }
