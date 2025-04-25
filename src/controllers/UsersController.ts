@@ -24,7 +24,6 @@ export class UsersController {
             const adminUser = await prisma.usuario.create({
                 data: {
                     nombre: req.body.nombre,
-                    apellido: req.body.apellido,
                     email: req.body.email,
                     password: await hashPassword(req.body.password),
                     role: req.body.role || 'CUSTOMER',
@@ -45,7 +44,6 @@ export class UsersController {
                 select: {
                     id: true,
                     nombre: true,
-                    apellido: true,
                     email: true,
                     role: true,
                     imagen: true,
@@ -70,7 +68,6 @@ export class UsersController {
                 select: {
                     id: true,
                     nombre: true,
-                    apellido: true,
                     email: true,
                     role: true,
                     imagen: true,
@@ -95,7 +92,7 @@ export class UsersController {
     static async updateUser(req: Request, res: Response) {
         const { id } = req.user;
         try {
-            const userUpdated = await prisma.usuario.update({
+            await prisma.usuario.update({
                 where: { id },
                 data: req.body
             })
@@ -109,7 +106,7 @@ export class UsersController {
     static async deleteUser(req: Request, res: Response) {
         const { id } = req.user
         try {
-            const userDeleted = await prisma.usuario.delete({
+            await prisma.usuario.delete({
                 where: { id }
             })
             res.status(200).send('Usuario eliminado correctamente')

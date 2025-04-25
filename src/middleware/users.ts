@@ -19,7 +19,6 @@ export async function userExists(req: Request, res: Response, next: NextFunction
             select: {
                 id: true,
                 nombre: true,
-                apellido: true,
                 email: true,
                 role: true,
                 imagen: true,

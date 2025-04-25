@@ -10,8 +10,6 @@ const router = Router();
 router.post('/',
     body('nombre')
         .notEmpty().withMessage('El nombre es obligatorio'),
-    body('apellido')
-        .notEmpty().withMessage('El apellido es obligatorio'),
     body('email')
         .notEmpty().withMessage('El correo electronico es obligatorio')
         .isEmail().withMessage('Correo Electronico no valido'),
