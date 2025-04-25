@@ -36,7 +36,7 @@ class InsuranceController {
 
         const { id } = req.insurance;
         try {
-            const seguro = prisma.seguro.findFirst({
+            const seguro = await prisma.seguro.findFirst({
                 where: { id }
             })
 

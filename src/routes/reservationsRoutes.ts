@@ -8,20 +8,21 @@ import { reservationExists } from "../middleware/reservation";
 const router = Router()
 
 router.post('/', 
+    body('nombre')
+        .notEmpty().withMessage('El nombre es obligatorio'),
+    body('email')
+        .notEmpty().withMessage('El email es obligatorio'),
+    body('telefono')
+        .notEmpty().withMessage('El telefono es obligatorio'),
     body('vehiculo_id')
         .notEmpty().withMessage('El vehiculo es obligatorio'),
-    body('cliente_id')
-        .notEmpty().withMessage('El cliete es obligatorio'),
-    body('seguro_id')
-        .notEmpty().withMessage('El seguro es obligatorio'),
     body('fecha_inicio')
         .notEmpty().withMessage('La fecha de inicio es obligatoria'),
     body('fecha_fin')
         .notEmpty().withMessage('La fecha fin es obligatoria'),
-    body('estado')
-        .notEmpty().withMessage('El estado es obligatorio'),
     body('alquiler')
         .notEmpty().withMessage('El alquiler es obligatorio'),
+    handleInputErrors,
     ReservationsController.createNewReservation
 )
 router.get('/', 

@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+
 import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
-import Reservas from '../models/Reservations';
 
 class CarController {
 

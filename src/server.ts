@@ -4,12 +4,12 @@ import { corsConfig } from "./config/cors";
 import { connectDB } from "./config/db";
 import dotenv from 'dotenv'
 import authRoutes from "./routes/authRoutes"
-import carRoutes from "./routes/carRoutes";
-import insuranceRoutes from "./routes/insuranceRoutes";
-import userRoutes from "./routes/usersRoutes"
-import branchRoutes from "./routes/branchesRoutes"
-import reservationRoutes from "./routes/reservationsRoutes"
-import maintenanceRoutes from "./routes/maintenanceRoutes"
+import carsRoutes from "./routes/carsRoutes";
+import insurancesRoutes from "./routes/insurancesRoutes";
+import usersRoutes from "./routes/usersRoutes"
+import branchesRoutes from "./routes/branchesRoutes"
+import reservationsRoutes from "./routes/reservationsRoutes"
+import maintenancesRoutes from "./routes/maintenancesRoutes"
 
 dotenv.config()
 
@@ -21,11 +21,11 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes)
-app.use('/api/cars', carRoutes)
-app.use('/api/insurances', insuranceRoutes)
-app.use('/api/users', userRoutes)
-app.use('/api/branches', branchRoutes)
-app.use('/api/reservations', reservationRoutes)
-app.use('/api/maintenances', maintenanceRoutes)
+app.use('/api/cars', carsRoutes)
+app.use('/api/insurances', insurancesRoutes)
+app.use('/api/users', usersRoutes)
+app.use('/api/branches', branchesRoutes)
+app.use('/api/reservations', reservationsRoutes)
+app.use('/api/maintenances', maintenancesRoutes)
 
 export default app;
