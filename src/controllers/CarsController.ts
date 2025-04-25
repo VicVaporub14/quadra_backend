@@ -2,7 +2,7 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
-class CarController {
+export class CarsController {
 
     static async createCar(req: Request, res: Response) {
         try {
@@ -97,5 +97,3 @@ class CarController {
     }
 
 }
-
-export default CarController;

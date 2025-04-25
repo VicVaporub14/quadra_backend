@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { prisma} from '../lib/prisma'
 
-class InsuranceController {
+export class InsurancesController {
 
     static async createInsurance(req: Request, res: Response) {
         const { tipo, cobertura, precio, descripcion } = req.body;
@@ -86,5 +86,3 @@ class InsuranceController {
         }
     }
 }
-
-export default InsuranceController;

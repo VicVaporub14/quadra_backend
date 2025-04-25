@@ -1,8 +1,8 @@
 
 import { Router } from "express";
-import { MaintenanceController } from "../controllers/MaintenanceController";
 import { body } from "express-validator";
 import { maintenanceExists } from "../middleware/maintenance";
+import { MaintenancesController } from "../controllers/MaintenancesController";
 
 const router = Router();
 
@@ -17,17 +17,17 @@ router.post('/',
         .isNumeric().withMessage('El kilometraje es obligatorio'),
     body('notas')
         .notEmpty().withMessage('Agrege al menos una nota es obligatorio'),
-    MaintenanceController.createMaintenance
+    MaintenancesController.createMaintenance
 )
 
 router.get('/',
-    MaintenanceController.getAllMaintenances
+    MaintenancesController.getAllMaintenances
 )
 
 router.param('carId', maintenanceExists)
 
 router.get('/:carId',
-    MaintenanceController.getMaintenanceById
+    MaintenancesController.getMaintenanceById
 )
 
 export default router

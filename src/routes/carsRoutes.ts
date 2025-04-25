@@ -1,8 +1,8 @@
 import { Router } from "express";
-import CarController from "../controllers/CarController";
 import { body, param } from "express-validator";
 import handleInputErrors from "../middleware/validation";
 import { carExist } from "../middleware/car";
+import { CarsController } from "../controllers/CarsController";
 
 const router = Router();
 
@@ -30,9 +30,9 @@ router.post('/',
     body('estado')
         .notEmpty().isString().withMessage('El estado es obligatorio'),
     handleInputErrors,
-    CarController.createCar
+    CarsController.createCar
 )
-router.get('/', CarController.getAllCars)
+router.get('/', CarsController.getAllCars)
 
 
 
@@ -40,7 +40,7 @@ router.param('carId', carExist)
 
 router.get('/:carId',
     handleInputErrors,
-    CarController.getCarById
+    CarsController.getCarById
 )
 
 router.put('/:carId',
@@ -68,13 +68,13 @@ router.put('/:carId',
     body('estado')
         .notEmpty().isString().withMessage('El estado es obligatorio'),
     handleInputErrors,
-    CarController.updateCar
+    CarsController.updateCar
 )
 
 router.delete('/:carId',
     param('carId').isNumeric().withMessage('Id no valido'),
     handleInputErrors,
-    CarController.deleteCar
+    CarsController.deleteCar
 )
 
 export default router;

@@ -1,9 +1,9 @@
 
 import { Router } from "express";
 import { body, param } from "express-validator";
-import InsuranceController  from "../controllers/InsuranceController";
 import { handleInputErrors } from "../middleware/validation";
 import { insuranceExists } from "../middleware/insurance";
+import { InsurancesController } from "../controllers/InsurancesController";
 
 
 const router = Router();
@@ -18,10 +18,10 @@ router.post('/',
     body('descripcion')
         .notEmpty().isString().withMessage('La descripción es requerida'),
     handleInputErrors,
-    InsuranceController.createInsurance
+    InsurancesController.createInsurance
 )
 router.get('/', 
-    InsuranceController.getAllInsurances
+    InsurancesController.getAllInsurances
 )
 
 router.param('insuranceId', insuranceExists)
@@ -29,7 +29,7 @@ router.param('insuranceId', insuranceExists)
 router.get('/:insuranceId',
     param('insuranceId').isNumeric().withMessage('Id no valido'),
     handleInputErrors,
-    InsuranceController.getInsuranceById
+    InsurancesController.getInsuranceById
 )
 
 router.put('/:insuranceId', 
@@ -43,12 +43,12 @@ router.put('/:insuranceId',
     body('descripcion')
         .notEmpty().isString().withMessage('La descripción es requerida'),
     handleInputErrors,
-    InsuranceController.updateInsurance
+    InsurancesController.updateInsurance
 )
 router.delete('/:insuranceId',
     param('insuranceId').isNumeric().withMessage('Id no valido'),
     handleInputErrors,
-    InsuranceController.deleteInsurance
+    InsurancesController.deleteInsurance
 )
 
 

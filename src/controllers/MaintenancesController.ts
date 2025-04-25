@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Mantenimiento from "../models/Maintenance";
 
-export class MaintenanceController {
+export class MaintenancesController {
     static createMaintenance = async (req: Request, res: Response) => {
         const { vehiculo_id, mantenimiento } = req.body;
         const { tipo, costo, kilometraje, notas } = mantenimiento
