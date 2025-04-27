@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
-import { prisma } from "../lib/prisma";
 import { hashPassword } from "../utils/auth";
+import { prisma } from "../lib/prisma";
+import { generateToken } from "../utils/token";
 
 export class AuthController {
     static createAccount = async (req: Request, res: Response) => {
@@ -20,7 +21,7 @@ export class AuthController {
             const passwordHashed = await hashPassword(password)
 
             // Si no existe, crea un usuario nuevo
-            await prisma.usuario.create({
+            const user = await prisma.usuario.create({
                 data: {
                     nombre: req.body.name,
                     email: req.body.email,
@@ -28,10 +29,14 @@ export class AuthController {
                 }
             })
 
-            // // Generar el token
-            // const token = new Token()
-            // token.token = generateToken()
-            // token.user = user.id
+            // Generar el token
+
+            await prisma.token.create({
+                data: {
+                    token: generateToken(),
+                    userId: user.id
+                }
+            })
 
             // // Enviar email
             // AuthEmail.sendConfirmationEmail({
