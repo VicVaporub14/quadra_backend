@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { hashPassword } from "../utils/auth";
+import { checkPassword, hashPassword } from "../utils/auth";
 import { prisma } from "../lib/prisma";
 import { generateToken } from "../utils/token";
 import { AuthEmail } from "../emails/AuthEmails";
@@ -81,6 +81,55 @@ export class AuthController {
 
         } catch (error) {
             res.status(500).json('Hubo un error al confirmar la cuenta')
+        }
+    }
+
+    static login = async (req: Request, res: Response) => {
+        try {
+            const { email, password } = req.body;
+
+            const user = await prisma.usuario.findFirst({
+                where: { email }
+            })
+
+            if (!user) {
+                const error = new Error('Usuario no encontrado')
+                res.status(404).json({error: error.message})
+                return
+            }
+
+            if (!user.confirmado) {
+                // Crear Token
+                const token = await prisma.token.create({
+                    data: {
+                        token: generateToken(),
+                        userId: user.id
+                    }
+                })
+
+                // Enviar Email
+                AuthEmail.sendConfirmationEmail({
+                    email: user.email,
+                    name: user.nombre,
+                    token: token.token
+                })
+
+                const error = new Error('La cuenta aun no ha sido confirmada, hemos mandado nuevamente un correo de confirmacion')
+                res.status(401).json({error: error.message})
+                return
+            }
+
+            const isPasswordCorrect = await checkPassword(password, user.password)
+            if (!isPasswordCorrect) {
+                const error = new Error('La contraseña es incorrecta')
+                res.status(401).json({error: error.message})
+                return
+            }
+
+            res.send('Inicio de Sesion exitoso')
+
+        } catch (error) {
+            res.status(500).json('Hubo un error al Iniciar Sesion')
         }
     }
 }
