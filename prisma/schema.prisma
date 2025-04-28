@@ -62,11 +62,12 @@ enum Role {
 }
 
 model Token {
-  id      Int       @id @default(autoincrement())
-  token   String
-  userId    Int
-  user    Usuario   @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
+  id          Int       @id @default(autoincrement())
+  token       String
+  userId      Int
+  user        Usuario   @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime  @default(dbgenerated("now() + interval '10 minutes'"))
 }
 
 model Sucursal {

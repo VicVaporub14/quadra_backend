@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { hashPassword } from "../utils/auth";
 import { prisma } from "../lib/prisma";
 import { generateToken } from "../utils/token";
+import { AuthEmail } from "../emails/AuthEmails";
 
 export class AuthController {
     static createAccount = async (req: Request, res: Response) => {
@@ -31,21 +32,22 @@ export class AuthController {
 
             // Generar el token
 
-            await prisma.token.create({
+            const token = await prisma.token.create({
                 data: {
                     token: generateToken(),
                     userId: user.id
                 }
             })
 
-            // // Enviar email
-            // AuthEmail.sendConfirmationEmail({
-            //     email: user.email,
-            //     name: user.name,
-            //     token: token.token
-            // })
+            // Enviar email
+            AuthEmail.sendConfirmationEmail({
+                email: user.email,
+                name: user.nombre,
+                token: token.token
+            })
 
             res.send('Cuenta creada correctamente')
+            
         } catch (error) {
             res.status(500).json('Error al crear la cuenta')
         }
