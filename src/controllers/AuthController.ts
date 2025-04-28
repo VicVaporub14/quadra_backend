@@ -3,6 +3,7 @@ import { checkPassword, hashPassword } from "../utils/auth";
 import { prisma } from "../lib/prisma";
 import { generateToken } from "../utils/token";
 import { AuthEmail } from "../emails/AuthEmails";
+import { generateJWT } from "../utils/jwt";
 
 export class AuthController {
     static createAccount = async (req: Request, res: Response) => {
@@ -126,7 +127,8 @@ export class AuthController {
                 return
             }
 
-            res.send('Inicio de Sesion exitoso')
+            const token = generateJWT({id: user.id})
+            res.send(token)
 
         } catch (error) {
             res.status(500).json('Hubo un error al Iniciar Sesion')
