@@ -47,9 +47,40 @@ export class AuthController {
             })
 
             res.send('Cuenta creada correctamente')
-            
+
         } catch (error) {
             res.status(500).json('Error al crear la cuenta')
+        }
+    }
+
+    static confirmAccount = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.body;
+            const tokenExists = await prisma.token.findFirst({
+                where: { token }
+            })
+
+            if (!tokenExists) {
+                const error = new Error('Token no valido')
+                res.status(404).json({error: error.message})
+                return
+            }
+
+            await prisma.usuario.update({
+                where: { id: tokenExists.userId },
+                data: {
+                    confirmado: true
+                }
+            })
+
+            await prisma.token.delete({
+                where: { id: tokenExists.id}
+            })
+
+            res.send('Cuenta Confirmada Correctamente')
+
+        } catch (error) {
+            res.status(500).json('Hubo un error al confirmar la cuenta')
         }
     }
 }
