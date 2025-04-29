@@ -5,7 +5,7 @@ import { hashPassword } from "../utils/auth";
 
 export class UsersController {
 
-    static async createAdminUser(req: Request, res: Response) {
+    static async createUser(req: Request, res: Response) {
         try {
             const { email } = req.body;
 
@@ -31,7 +31,7 @@ export class UsersController {
                     confirmado: req.body.confirmado
                 }
             })
-            res.status(201).send('Usuario Administrador Creado Correctamente')
+            res.status(201).send('Usuario Creado Correctamente')
         } catch (error) {
             console.log(error)
             res.status(500).json({error: 'Error al crear Usuario Administrador'})
