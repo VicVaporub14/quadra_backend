@@ -139,7 +139,9 @@ export class AuthController {
         try {
             const { email } = req.body
             
-            const user = await prisma.usuario.findFirst(email)
+            const user = await prisma.usuario.findFirst({
+                where: { email }
+            })
 
             if (!user) {
                 const error = new Error('El correo que ingreso, no esta registrado')
@@ -172,6 +174,42 @@ export class AuthController {
 
         } catch (error) {
             res.status(500).json('Hubo un error al solicitar codigo de confirmacion')
+        }
+    }
+
+    static forgotPassword = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+
+            const user = await prisma.usuario.findFirst({
+                where: { email }
+            })
+
+            if (!user) {
+                const error = new Error('El correo que ingreso, no esta registrado')
+                res.status(404).json({error: error.message})
+                return
+            }
+
+            // Generar nuevo Token
+            const token = await prisma.token.create({
+                data: {
+                    token: generateToken(),
+                    userId: user.id
+                }
+            })
+
+            // Enviar Email
+            AuthEmail.sendConfirmationEmail({
+                email: user.email,
+                name: user.nombre,
+                token: token.token
+            })
+
+            res.send('Revisa tu correo para el cambio de tu contraseña')
+
+        } catch (error) {
+            res.status(500).json('Hubo un error al cambiar la contraseña')
         }
     }
 }
