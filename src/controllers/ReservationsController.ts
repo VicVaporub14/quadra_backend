@@ -7,6 +7,7 @@ class ReservationsController {
     static async createNewReservation(req: Request, res: Response) {
         try {
             const newReservation = new Reservas(req.body)
+            // Verificar que exista vehiculo
             await newReservation.save();
             res.send('Reserva creada correctamente')
         } catch (error) {
