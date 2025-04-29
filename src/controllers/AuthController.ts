@@ -134,4 +134,44 @@ export class AuthController {
             res.status(500).json('Hubo un error al Iniciar Sesion')
         }
     }
+
+    static requestConfirmationCode = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body
+            
+            const user = await prisma.usuario.findFirst(email)
+
+            if (!user) {
+                const error = new Error('El correo que ingreso, no esta registrado')
+                res.status(404).json({error: error.message})
+                return
+            }
+
+            if (user.confirmado) {
+                const error = new Error('El usuario ya esta confirmado')
+                res.status(403).json({error: error.message})
+                return
+            }
+
+            // Generar nuevo Token
+            const token = await prisma.token.create({
+                data: {
+                    token: generateToken(),
+                    userId: user.id
+                }
+            })
+
+            // Enviar Email
+            AuthEmail.sendConfirmationEmail({
+                email: user.email,
+                name: user.nombre,
+                token: token.token
+            })
+
+            res.send('Se ha enviado un nuevo token a su correo electronico')
+
+        } catch (error) {
+            res.status(500).json('Hubo un error al solicitar codigo de confirmacion')
+        }
+    }
 }
