@@ -94,6 +94,7 @@ export class UsersController {
         try {
             await prisma.usuario.update({
                 where: { id },
+                // Verificar porque no hace la actualizacion
                 data: req.body
             })
             res.status(200).send('Usuario actualizado correctamente')

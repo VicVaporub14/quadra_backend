@@ -30,16 +30,16 @@ router.get('/:carId',
     MaintenancesController.getMaintenanceById
 )
 
-// router.patch('/:carId/:maintenanceId',
-//     // Validaciones específicas para PATCH
-//     body('tipo').optional().notEmpty(),
-//     body('costo').optional().isNumeric(),
-//     body('status').optional().isIn(['pendiente', 'enProgreso', 'completado']),
-//     MaintenancesController.editMaintenance
-// );
-// router.delete(
-//     '/:carId/:maintenanceId',
-//     MaintenancesController.deleteMaintenance
-// );
+router.patch('/:carId/:maintenanceId',
+    // Validaciones específicas para PATCH
+    body('tipo').optional().notEmpty(),
+    body('costo').optional().isNumeric(),
+    body('status').optional().isIn(['pendiente', 'enProgreso', 'completado']),
+    MaintenancesController.editMaintenance
+);
+router.delete(
+    '/:carId/:maintenanceId',
+    MaintenancesController.deleteMaintenance
+);
 
 export default router
