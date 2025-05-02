@@ -19,3 +19,5 @@ export const corsConfig : CorsOptions = {
 }
 
 // Prueba rama Victor
+
+// Agregue nuevo metodo cors
