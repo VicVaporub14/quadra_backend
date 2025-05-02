@@ -25,4 +25,34 @@ router.post('/create-account',
     AuthController.createAccount
 )
 
+router.post('/confirm-account',
+    body('token')
+        .notEmpty().withMessage('El Token es obligatorio'),
+    handleInputErrors,
+    AuthController.confirmAccount
+)
+
+router.post('/login',
+    body('email')
+        .isEmail().withMessage('Email no valido'),
+    body('password')
+        .notEmpty().withMessage('El password es obligatorio'),
+    handleInputErrors,
+    AuthController.login
+)
+
+router.post('/request-code',
+    body('email')
+        .isEmail().withMessage('Correo Electronico no valido'),
+    handleInputErrors,
+    AuthController.requestConfirmationCode
+)
+
+router.post('/forgot-password',
+    body('email')
+        .isEmail().withMessage('Correo Electronico no valido'),
+    handleInputErrors,
+    AuthController.forgotPassword
+)
+
 export default router;

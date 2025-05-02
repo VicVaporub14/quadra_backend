@@ -30,7 +30,7 @@ router.post('/',
     body('confirmado')
         .optional(),
     handleInputErrors,
-    UsersController.createAdminUser       
+    UsersController.createUser       
 )
 
 router.get('/', 

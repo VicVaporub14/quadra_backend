@@ -46,6 +46,7 @@ class ReservationsController {
                 detalles: error instanceof Error ? error.message : 'Error desconocido'
             });
         }
+
     }
 
     static async getAllReservations(req: Request, res: Response) {
@@ -82,7 +83,8 @@ class ReservationsController {
                         include: { seguro: true }
                     });
                     return {
-                        ...reserva.toObject()
+                        ...reserva.toObject(),
+                        vehiculo // Incluir detalles del vehículo o null si no existe
                     };
                 })
             );
@@ -122,7 +124,7 @@ static async getReservationById(req: Request, res: Response) {
         // Combinar datos
         const reservaConDetalles = {
             ...reserva.toObject(),
-
+            vehiculo
         };
 
         res.json(reservaConDetalles);

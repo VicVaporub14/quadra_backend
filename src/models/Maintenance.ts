@@ -11,6 +11,7 @@ export type MantenimientoStatus = typeof mantenimientoStatus[keyof typeof manten
 export interface IMantenimiento extends Document {
     vehiculo_id: number,
     mantenimientos: {
+        _id: mongoose.Types.ObjectId,
         tipo: string,
         costo: number,
         kilometraje: number,
@@ -26,6 +27,10 @@ const MantenimientoSchema : Schema = new Schema({
     },
     mantenimientos: [
         {
+            _id: {
+                type: mongoose.Types.ObjectId,
+                auto: true
+            },
             tipo: {
                 type: String,
                 required: true

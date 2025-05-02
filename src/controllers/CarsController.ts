@@ -78,7 +78,7 @@ export class CarsController {
     static async deleteCar(req: Request, res: Response) {
         const { id } = req.car;
         try {
-            const car = prisma.vehiculo.delete({
+            const car = await prisma.vehiculo.delete({
                 where: { id }
             })
 
