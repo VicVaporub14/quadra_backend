@@ -4,13 +4,47 @@ import { prisma } from "../lib/prisma";
 
 class ReservationsController {
 
-    static async createNewReservation(req: Request, res: Response) {
+    static async createNewReservation(req: Request, res: Response){
         try {
-            const newReservation = new Reservas(req.body)
-            await newReservation.save();
-            res.send('Reserva creada correctamente')
+            const { usuario_id, vehiculo_id, ...reservaData } = req.body;
+            
+            // Validar existencia del usuario y vehículo
+            const [usuarioExistente, vehiculoExistente] = await Promise.all([
+                prisma.usuario.findUnique({ where: { id: usuario_id } }),
+                prisma.vehiculo.findUnique({ 
+                    where: { id: vehiculo_id },
+                    include: { seguro: true } 
+                })
+            ]);
+
+            if (!usuarioExistente) {
+                res.status(404).json({ error: 'Usuario no encontrado' });
+                return;
+            }
+
+            if (!vehiculoExistente) {
+                res.status(404).json({ error: 'Vehículo no encontrado' });
+                return;
+            }
+
+            const nuevaReserva = new Reservas({
+                usuario_id,
+                vehiculo_id,
+                ...reservaData
+            });
+
+            await nuevaReserva.save();
+            
+            res.status(201).json({
+                message: 'Reserva creada correctamente'
+            });
+
         } catch (error) {
-            res.status(500).json({error: 'Hubo un error al crear la reserva'})
+            console.error(error);
+            res.status(500).json({ 
+                error: 'Error al crear reserva',
+                detalles: error instanceof Error ? error.message : 'Error desconocido'
+            });
         }
     }
 
@@ -24,61 +58,118 @@ class ReservationsController {
         }
     }
 
-    static async getReservationById(req: Request, res: Response) {
-        const { id } = req.reservation
+    static async getReservationsByUserId(req: Request, res: Response) {
         try {
-            // Buscar la reservación por ID
-            const reservation = await Reservas.findById(id);
-
-            if (!reservation) {
-                const error = new Error('Reservación no encontrada');
-                res.status(404).json({ error: error.message });
-                return;
-            }
-
-            // Buscar el vehículo relacionado con la reservación
-            const vehiculo = await prisma.vehiculo.findFirst({
-                where: { id: reservation.vehiculo_id },
-                include: {
-                    seguro: true
-                }
+            const { usuario_id } = req.params;
+            
+            // Validar existencia del usuario
+            const usuario = await prisma.usuario.findUnique({
+                where: { id: Number(usuario_id) }
             });
 
-            if (!vehiculo) {
-                const error = new Error('Vehículo no encontrado');
-                res.status(404).json({ error: error.message });
+            if (!usuario) {
+                res.status(404).json({ error: 'Usuario no encontrado' });
                 return;
             }
 
-            // Combinar los datos de la reservación con los datos del vehículo
-            const reservationWithVehicle = {
-                ...reservation.toObject(), // Convierte el documento de Mongoose a un objeto plano
-                vehiculo, // Agrega los datos del vehículo
-            };
+            const reservas = await Reservas.find({ usuario_id: Number(usuario_id) });
+            
+            // Obtener detalles de vehículos
+            const reservasConDetalles = await Promise.all(
+                reservas.map(async (reserva) => {
+                    const vehiculo = await prisma.vehiculo.findUnique({
+                        where: { id: reserva.vehiculo_id },
+                        include: { seguro: true }
+                    });
+                    return {
+                        ...reserva.toObject()
+                    };
+                })
+            );
 
-            res.json(reservationWithVehicle);
+            res.json(reservasConDetalles);
+            
         } catch (error) {
-            res.status(500).json({error: 'Hubo un error al obtener la reserva'})
+            console.error(error);
+            res.status(500).json({ error: 'Error al obtener reservas' });
         }
     }
 
+static async getReservationById(req: Request, res: Response) {
+    try {
+        // El middleware reservationExists ya pobló req.reservation
+        const reserva = req.reservation;
+
+        // Obtener datos del usuario y vehículo desde PostgreSQL
+        const [usuario, vehiculo] = await Promise.all([
+            prisma.usuario.findUnique({
+                where: { id: reserva.usuario_id }
+            }),
+            prisma.vehiculo.findUnique({
+                where: { id: reserva.vehiculo_id },
+                include: { seguro: true }
+            })
+        ]);
+
+        // Validar que existan los datos relacionados
+        if (!usuario || !vehiculo) {
+            res.status(404).json({
+                error: "Datos relacionados no encontrados (usuario o vehículo)"
+            });
+            return;
+        }
+
+        // Combinar datos
+        const reservaConDetalles = {
+            ...reserva.toObject(),
+
+        };
+
+        res.json(reservaConDetalles);
+
+    } catch (error) {
+        console.error("Error en getReservationById:", error);
+        res.status(500).json({ 
+            error: "Error al obtener la reserva", // Mensaje específico
+            detalles: error instanceof Error ? error.message : "Error desconocido"
+        });
+    }
+}
+
     static async updateReservation(req: Request, res: Response) {
         try {
-            req.reservation.nombre = req.body.nombre;
-            req.reservation.email = req.body.email;
-            req.reservation.telefono = req.body.telefono;
-            req.reservation.vehiculo_id = req.body.vehiculo_id;
-            req.reservation.fecha_inicio = req.body.fecha_inicio;
-            req.reservation.fecha_fin = req.body.fecha_fin;
-            req.reservation.estado = req.body.estado;
-            req.reservation.alquiler = req.body.alquiler;
+            const { usuario_id, vehiculo_id, ...updateData } = req.body;
+            
+            // Validaciones
+            if (usuario_id) {
+                const usuario = await prisma.usuario.findUnique({
+                    where: { id: usuario_id }
+                });
+                if (!usuario) 
+                    res.status(404).json({ error: 'Usuario no existe' });
+            }
 
-            await req.reservation.save()
+            if (vehiculo_id) {
+                const vehiculo = await prisma.vehiculo.findUnique({
+                    where: { id: vehiculo_id }
+                });
+                if (!vehiculo)  
+                    res.status(404).json({ error: 'Vehículo no existe' });
+            }
 
-            res.send('Reservacion Actualizada Correctamente')
+            const reservaActualizada = await Reservas.findByIdAndUpdate(
+                req.reservation._id,
+                { usuario_id, vehiculo_id, ...updateData },
+                { new: true }
+            );
+
+            res.json({
+                message: 'Reserva actualizada'
+            });
+
         } catch (error) {
-            console.log(error)
-            res.status(500).json({error: 'Hubo un error al actualizar la reserva'})
+            console.error(error);
+            res.status(500).json({ error: 'Error al actualizar reserva' });
         }
     }
 
