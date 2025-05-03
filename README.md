@@ -7,7 +7,10 @@ Quadra Backend es una API REST desarrollada en Node.js y TypeScript para gestion
 - **Gestión de vehículos**: CRUD completo para vehículos, incluyendo atributos como marca, modelo, color, año, tipo, precio por día, estado, y más.
 - **Gestión de seguros**: CRUD para seguros asociados a los vehículos.
 - **Reservas**: Gestión de reservas de vehículos, incluyendo fechas de inicio y fin, estado, y detalles del alquiler.
-- **Autenticación**: Soporte para la creación de cuentas de usuario con contraseñas encriptadas.
+- **Autenticación**: 
+  - Soporte para la creación de cuentas de usuario con contraseñas encriptadas.
+  - Generación y validación de tokens JWT para la autenticación de usuarios.
+  - Recuperación de contraseñas mediante correos electrónicos enviados con `nodemailer`.
 - **Middleware**: Validación de entradas y verificación de existencia de recursos como vehículos y seguros.
 - **Base de datos**: Uso de PostgreSQL para datos estructurados y MongoDB para datos no relacionales.
 - **Configuración flexible**: Uso de variables de entorno para configurar la conexión a las bases de datos y otros parámetros.
@@ -19,6 +22,8 @@ Quadra Backend es una API REST desarrollada en Node.js y TypeScript para gestion
 - **Prisma**: ORM para interactuar con la base de datos PostgreSQL.
 - **Mongoose**: ODM para manejar colecciones en MongoDB.
 - **bcryptjs**: Para encriptar contraseñas.
+- **jsonwebtoken (JWT)**: Para la generación y validación de tokens de autenticación.
+- **nodemailer**: Para el envío de correos electrónicos, como recuperación de contraseñas.
 - **express-validator**: Validación de entradas en las rutas.
 - **dotenv**: Manejo de variables de entorno.
 
@@ -47,6 +52,11 @@ src/
    DATABASE_POSTGRESQL=tu_url_de_postgresql
    DATABASE_MONGODB=tu_url_de_mongodb
    PORT=4000
+   JWT_SECRET=tu_secreto_jwt
+   EMAIL_HOST=smtp.tu_proveedor.com
+   EMAIL_PORT=587
+   EMAIL_USER=tu_correo
+   EMAIL_PASS=tu_contraseña
    ```
 4. Ejecuta las migraciones de Prisma:
    ```sh
