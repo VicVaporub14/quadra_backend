@@ -27,6 +27,7 @@ export class AuthController {
                 data: {
                     nombre: req.body.name,
                     email: req.body.email,
+                    telefono: req.body.telefono,
                     password: passwordHashed,
                 }
             })

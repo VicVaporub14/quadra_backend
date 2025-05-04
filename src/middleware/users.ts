@@ -20,6 +20,7 @@ export async function userExists(req: Request, res: Response, next: NextFunction
                 id: true,
                 nombre: true,
                 email: true,
+                telefono: true,
                 role: true,
                 imagen: true,
                 confirmado: true,

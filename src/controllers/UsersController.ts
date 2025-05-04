@@ -25,6 +25,7 @@ export class UsersController {
                 data: {
                     nombre: req.body.nombre,
                     email: req.body.email,
+                    telefono: req.body.telefono,
                     password: await hashPassword(req.body.password),
                     role: req.body.role || 'CUSTOMER',
                     imagen: req.body.imagen,
