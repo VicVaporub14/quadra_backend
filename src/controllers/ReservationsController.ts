@@ -105,11 +105,27 @@ static async getReservationById(req: Request, res: Response) {
         // Obtener datos del usuario y vehículo desde PostgreSQL
         const [usuario, vehiculo] = await Promise.all([
             prisma.usuario.findUnique({
-                where: { id: reserva.usuario_id }
+                where: { id: reserva.usuario_id },
+                select: {
+                    nombre: true,
+                    email: true
+                }
             }),
             prisma.vehiculo.findUnique({
                 where: { id: reserva.vehiculo_id },
-                include: { seguro: true }
+                select: {
+                    marca: true,
+                    modelo: true,
+                    anio: true,
+                    color: true,
+                    transmision: true,
+                    tipo: true,
+                    puertas: true,
+                    asientos: true,
+                    clima: true,
+                    precio_por_dia: true,
+                    seguro: true
+                }
             })
         ]);
 
@@ -124,6 +140,7 @@ static async getReservationById(req: Request, res: Response) {
         // Combinar datos
         const reservaConDetalles = {
             ...reserva.toObject(),
+            usuario,
             vehiculo
         };
 
