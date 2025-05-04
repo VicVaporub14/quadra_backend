@@ -108,7 +108,8 @@ static async getReservationById(req: Request, res: Response) {
                 where: { id: reserva.usuario_id },
                 select: {
                     nombre: true,
-                    email: true
+                    email: true,
+                    telefono: true
                 }
             }),
             prisma.vehiculo.findUnique({
