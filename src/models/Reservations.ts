@@ -45,7 +45,7 @@ const ReservasSchema: Schema = new Schema({
         },
         estado: {
             type: String,
-            default: 'no pagado'
+            default: 'No Pagado'
         }
     }
 }, { timestamps: true });
