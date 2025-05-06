@@ -51,11 +51,38 @@ class ReservationsController {
 
     static async getAllReservations(req: Request, res: Response) {
         try {
-            const reservations = await Reservas.find()
-            res.json(reservations)
+            // Obtener todas las reservaciones desde MongoDB
+            const reservations = await Reservas.find({}, { 
+                alquiler: 0,
+                createdAt: 0,
+                updatedAt: 0
+            });
+
+            // Obtener información de los usuarios desde PostgreSQL
+            const reservationsWithUserAndCarDetails = await Promise.all(
+                reservations.map(async (reservation) => {
+                    const usuario = await prisma.usuario.findUnique({
+                        where: { id: reservation.usuario_id },
+                        select: { nombre: true },
+                    });
+
+                    const vehiculo = await prisma.vehiculo.findUnique({
+                        where: { id: reservation.vehiculo_id },
+                        select: { modelo: true}
+                    })
+
+                    return {
+                        ...reservation.toObject(), // Convertir la reservación de MongoDB a un objeto plano
+                        usuario: usuario?.nombre || null, // Agregar solo el nombre del usuario
+                        vehiculo: vehiculo?.modelo || null, // Agregar solo el modelo del vehículo
+                    };
+                })
+            );
+
+            res.json(reservationsWithUserAndCarDetails);
         } catch (error) {
-            console.log(error)
-            res.status(500).json({error: 'Hubo un error al obtener las reservas'})
+            console.error(error);
+            res.status(500).json({ error: 'Hubo un error al obtener las reservaciones' });
         }
     }
 
