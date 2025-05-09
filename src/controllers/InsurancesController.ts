@@ -56,11 +56,15 @@ export class InsurancesController {
 
     static async updateInsurance(req: Request, res: Response) {
         const { id } = req.insurance;
-
         try {
             await prisma.seguro.update({
-                where: {id},
-                data: req.body
+                where: { id },
+                data: {
+                    tipo: req.body.tipo,
+                    cobertura: req.body.cobertura,
+                    precio: parseFloat(req.body.precio),
+                    descripcion: req.body.descripcion
+                }
             });
 
             res.status(200).json("Seguro actualizado correctamente");
