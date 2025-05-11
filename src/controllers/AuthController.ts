@@ -218,7 +218,9 @@ export class AuthController {
         try {
             const { token } = req.body;
 
-            const tokenExists = await prisma.token.findUnique(token)
+            const tokenExists = await prisma.token.findFirst({
+                where: { token }
+            })
 
             if (!tokenExists) {
                 const error = new Error('Token no valido');
@@ -228,9 +230,45 @@ export class AuthController {
 
             res.send('Token Valido, define tu nueva contraseña')
         } catch (error) {
-            res.status(500).json({error: error.message})
+            res.status(500).json('Hubo un error al validar el token')
         }
     }
+
+    static setNewPasswordWithToken = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.params
+            const { password } = req.body;
+
+            const tokenExists = await prisma.token.findFirst({
+                where: { token }
+            })
+
+            if (!tokenExists) {
+                const error = new Error('Token No Valido')
+                res.status(404).json({error: error.message})
+                return;
+            }
+
+            await prisma.usuario.update({ 
+                where: { id: tokenExists.userId },
+                data: {
+                    password: await hashPassword(password)
+                }
+            });
+
+            await prisma.token.delete({
+                where: { id: tokenExists.id}
+            })
+
+            res.send('Contraseña Actualizada Correctamente')
+
+        } catch (error) {
+            res.status(500).json('Hubo un error')
+        }
+    }
+
+
+
 
 
 
