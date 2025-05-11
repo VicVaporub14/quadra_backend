@@ -214,16 +214,33 @@ export class AuthController {
         }
     }
 
+    static validateToken = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.body;
+
+            const tokenExists = await prisma.token.findUnique(token)
+
+            if (!tokenExists) {
+                const error = new Error('Token no valido');
+                res.status(404).json({error: error.message});
+                return;
+            }
+
+            res.send('Token Valido, define tu nueva contraseña')
+        } catch (error) {
+            res.status(500).json({error: error.message})
+        }
+    }
 
 
 
 
-    
 
     static checkPassword = async (req: Request, res: Response) => {
         try {
             const { password } = req.body;
 
+                                                            // Hacer middleware para usuario autenticado
             const user = await prisma.usuario.findFirst()  // Busqueda del usuario autenticado
 
             const isPasswordCorrect = await checkPassword(password, user.password)
@@ -237,7 +254,7 @@ export class AuthController {
             res.send('Contraseña Correcta')
         } catch (error) {
             console.log(error)
-            res.status(401).json({error: error.message})
+            res.status(500).json({error: error.message})
         }
     }
 }
