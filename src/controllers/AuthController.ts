@@ -48,7 +48,7 @@ export class AuthController {
                 token: token.token
             })
 
-            res.send('Cuenta creada correctamente')
+            res.send('Cuenta creada correctamente, revise su email para confirmarla')
 
         } catch (error) {
             res.status(500).json('Error al crear la cuenta')
