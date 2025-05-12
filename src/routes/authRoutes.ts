@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import handleInputErrors from "../middleware/validation";
 import { AuthController } from "../controllers/AuthController";
 
@@ -61,6 +61,23 @@ router.post('/validate-token',
         .notEmpty().withMessage('El Token es obligatorio'),
     handleInputErrors,
     AuthController.validateToken
+)
+
+
+router.post('/new-password/:token',
+    param('token')
+        .isNumeric().withMessage('Token No Valido'),
+    body('password')
+        .notEmpty().withMessage('La contraseña es obligatoria')
+        .isLength({min: 8}).withMessage('La contraseña debe tener al menos 8 caracteres'),
+    body('password_confirmation').custom((value, {req}) => {
+        if (value !== req.body.password) {
+            throw new Error("Las contraseñas no coinciden");
+        }
+        return true
+    }),
+    handleInputErrors,
+    AuthController.setNewPasswordWithToken
 )
 
 export default router;
