@@ -2,6 +2,9 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IReservas extends Document {
     usuario_id: number; // ID del usuario en PostgreSQL
+    nombre: string,
+    telefono: string,
+    email: string,
     vehiculo_id: number;
     fecha_inicio: Date;
     fecha_fin: Date;
@@ -15,9 +18,22 @@ export interface IReservas extends Document {
 
 const ReservasSchema: Schema = new Schema({
     usuario_id: { 
-        type: Number, 
-        required: [true, 'El ID de usuario es obligatorio'] 
+        type: Number
     },
+    // Cambios temporales
+    nombre: {
+        type: String,
+        required: [true, 'El Nombre es obligatorio'] 
+    },
+    telefono: {
+        type: String,
+        required: [true, 'El Nombre es obligatorio'] 
+    },
+    email: {
+        type: String,
+        required: [true, 'El Nombre es obligatorio'] 
+    },
+
     vehiculo_id: { 
         type: Number, 
         required: [true, 'El ID del vehículo es obligatorio'] 
