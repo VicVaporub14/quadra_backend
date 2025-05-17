@@ -10,8 +10,8 @@ const router = Router();
 // Crear Reserva
 router.post('/', 
     [
-        body('usuario_id')
-            .isNumeric().withMessage('ID de usuario inválido'),
+        // body('usuario_id')
+        //     .isNumeric().withMessage('ID de usuario inválido'),
         body('vehiculo_id')
             .isNumeric().withMessage('ID de vehículo inválido'),
         body('fecha_inicio')
