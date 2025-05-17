@@ -6,21 +6,26 @@ class ReservationsController {
 
     static async createNewReservation(req: Request, res: Response){
         try {
-            const { usuario_id, vehiculo_id, ...reservaData } = req.body;
-            
+            const {                vehiculo_id, ...reservaData } = req.body;
+                    // usuario_id, 
             // Validar existencia del usuario y vehículo
-            const [usuarioExistente, vehiculoExistente] = await Promise.all([
-                prisma.usuario.findUnique({ where: { id: usuario_id } }),
-                prisma.vehiculo.findUnique({ 
-                    where: { id: vehiculo_id },
-                    include: { seguro: true } 
-                })
-            ]);
+            // const [usuarioExistente, vehiculoExistente] = await Promise.all([
+            //     prisma.usuario.findUnique({ where: { id: usuario_id } }),
+            //     prisma.vehiculo.findUnique({ 
+            //         where: { id: vehiculo_id },
+            //         include: { seguro: true } 
+            //     })
+            // ]);
 
-            if (!usuarioExistente) {
-                res.status(404).json({ error: 'Usuario no encontrado' });
-                return;
-            }
+            const vehiculoExistente = await prisma.vehiculo.findUnique({
+                where: { id: vehiculo_id},
+                include: { seguro: true }
+            })
+
+            // if (!usuarioExistente) {
+            //     res.status(404).json({ error: 'Usuario no encontrado' });
+            //     return;
+            // }
 
             if (!vehiculoExistente) {
                 res.status(404).json({ error: 'Vehículo no encontrado' });
@@ -28,23 +33,21 @@ class ReservationsController {
             }
 
             const nuevaReserva = new Reservas({
-                usuario_id,
+                // usuario_id,
                 vehiculo_id,
                 ...reservaData
             });
 
-            await nuevaReserva.save();
+            const newReservation = await nuevaReserva.save();
             
             res.status(201).json({
-                message: 'Reserva creada correctamente'
+                id: newReservation.id,
+                message: 'Reservacion creada correctamente'
             });
 
         } catch (error) {
             console.error(error);
-            res.status(500).json({ 
-                error: 'Error al crear reserva',
-                detalles: error instanceof Error ? error.message : 'Error desconocido'
-            });
+            res.status(500).json({ error: 'Error al crear reserva' });
         }
 
     }
@@ -53,6 +56,8 @@ class ReservationsController {
         try {
             // Obtener todas las reservaciones desde MongoDB
             const reservations = await Reservas.find({}, { 
+                telefono:0,
+                email: 0,
                 alquiler: 0,
                 createdAt: 0,
                 updatedAt: 0
@@ -61,10 +66,10 @@ class ReservationsController {
             // Obtener información de los usuarios desde PostgreSQL
             const reservationsWithUserAndCarDetails = await Promise.all(
                 reservations.map(async (reservation) => {
-                    const usuario = await prisma.usuario.findUnique({
-                        where: { id: reservation.usuario_id },
-                        select: { nombre: true },
-                    });
+                    // const usuario = await prisma.usuario.findUnique({
+                    //     where: { id: reservation.usuario_id },
+                    //     select: { nombre: true },
+                    // });
 
                     const vehiculo = await prisma.vehiculo.findUnique({
                         where: { id: reservation.vehiculo_id },
@@ -73,7 +78,7 @@ class ReservationsController {
 
                     return {
                         ...reservation.toObject(), // Convertir la reservación de MongoDB a un objeto plano
-                        usuario: usuario?.nombre || null, // Agregar solo el nombre del usuario
+                        // usuario: usuario?.nombre || null, // Agregar solo el nombre del usuario
                         vehiculo: vehiculo?.modelo || null, // Agregar solo el modelo del vehículo
                     };
                 })
@@ -130,45 +135,69 @@ static async getReservationById(req: Request, res: Response) {
         const reserva = req.reservation;
 
         // Obtener datos del usuario y vehículo desde PostgreSQL
-        const [usuario, vehiculo] = await Promise.all([
-            prisma.usuario.findUnique({
-                where: { id: reserva.usuario_id },
-                select: {
-                    nombre: true,
-                    email: true,
-                    telefono: true
-                }
-            }),
-            prisma.vehiculo.findUnique({
-                where: { id: reserva.vehiculo_id },
-                select: {
-                    marca: true,
-                    modelo: true,
-                    anio: true,
-                    color: true,
-                    transmision: true,
-                    tipo: true,
-                    puertas: true,
-                    asientos: true,
-                    clima: true,
-                    precio_por_dia: true,
-                    seguro: true
-                }
-            })
-        ]);
+        // const [usuario, vehiculo] = await Promise.all([
+        //     prisma.usuario.findUnique({
+        //         where: { id: reserva.usuario_id },
+        //         select: {
+        //             nombre: true,
+        //             email: true,
+        //             telefono: true
+        //         }
+        //     }),
+        //     prisma.vehiculo.findUnique({
+        //         where: { id: reserva.vehiculo_id },
+        //         select: {
+        //             marca: true,
+        //             modelo: true,
+        //             anio: true,
+        //             color: true,
+        //             transmision: true,
+        //             tipo: true,
+        //             puertas: true,
+        //             asientos: true,
+        //             clima: true,
+        //             precio_por_dia: true,
+        //             seguro: true
+        //         }
+        //     })
+        // ]);
+
+        const vehiculo = await prisma.vehiculo.findUnique({
+            where: { id: reserva.vehiculo_id },
+            select: {
+                marca: true,
+                modelo: true,
+                anio: true,
+                color: true,
+                imagen: true,
+                transmision: true,
+                tipo: true,
+                puertas: true,
+                asientos: true,
+                clima: true,
+                precio_por_dia: true,
+                seguro: true
+            }
+        })
 
         // Validar que existan los datos relacionados
-        if (!usuario || !vehiculo) {
-            res.status(404).json({
-                error: "Datos relacionados no encontrados (usuario o vehículo)"
-            });
+        // if (!usuario || !vehiculo) {
+        //     res.status(404).json({
+        //         error: "Datos relacionados no encontrados (usuario o vehículo)"
+        //     });
+        //     return;
+        // }
+
+        if (!vehiculo) {
+            const error = new Error('Vehiculo no encontrado')
+            res.status(404).json({error: error.message});
             return;
         }
 
         // Combinar datos
         const reservaConDetalles = {
             ...reserva.toObject(),
-            usuario,
+            // usuario,
             vehiculo
         };
 
@@ -210,10 +239,7 @@ static async getReservationById(req: Request, res: Response) {
                 { new: true }
             );
 
-            res.json({
-                message: 'Reserva actualizada'
-            });
-
+            res.send('Reserva actualizada');
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Error al actualizar reserva' });
@@ -226,7 +252,7 @@ static async getReservationById(req: Request, res: Response) {
             res.send('Reservacion eliminada correctamente')
         } catch (error) {
             console.log(error)
-            // res.status(500).json({error: 'Hubo un error al eliminar la reserva'})
+            res.status(500).json({error: 'Hubo un error al eliminar la reserva'})
         }
     }
     
