@@ -201,7 +201,7 @@ export class AuthController {
             })
 
             // Enviar Email
-            AuthEmail.sendConfirmationEmail({
+            AuthEmail.sendPasswordResetToken({
                 email: user.email,
                 name: user.nombre,
                 token: token.token
